@@ -1,19 +1,19 @@
 # Deployment of Blood bank app on kubernetes
 
-Install the Kind in your local https://kind.sigs.k8s.io/docs/user/quick-start/#installation
+Install the Kind in your local using https://kind.sigs.k8s.io/docs/user/quick-start/#installation
 
 ---
 
 Follow below steps to setup the application on kind cluster
 
-create the cluster using below commands
+Create the cluster using below commands
 kind create cluster --name cluster name
 
 Create namespace for bloodbank app by applying manifest file
 
 kubectl apply -f namespace.yml
 
-create persistent volume for database using pv.yml , pvc.yml
+Create persistent volume for database using pv.yml , pvc.yml
 
 cd database
 
