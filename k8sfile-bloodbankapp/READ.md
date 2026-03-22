@@ -18,7 +18,7 @@ kind create cluster --name cluster name
 
 kubectl apply -f namespace.yml
 
-#### Creating mongo database using below commands
+#### Creating persistence volumen and persistence volumne claim using below commands
 
 cd database
 
