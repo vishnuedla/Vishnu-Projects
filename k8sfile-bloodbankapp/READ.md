@@ -68,6 +68,8 @@ you can do the port forwarding using below to see the website.
 
 kubectl port-forward svc/frontend 8080 : 80
 
+----
+
 
 check the localhost:8080
 <img width="1920" height="1008" alt="image" src="https://github.com/user-attachments/assets/3c31ec8e-1a6f-476b-97a9-9c61bb939c22" />
