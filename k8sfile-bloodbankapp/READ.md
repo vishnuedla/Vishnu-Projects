@@ -2,6 +2,8 @@
 
 Install the Kind in your local https://kind.sigs.k8s.io/docs/user/quick-start/#installation
 
+---
+
 Follow below steps to setup the application on kind cluster
 
 create the cluster using below commands
