@@ -74,7 +74,7 @@ k apply -f .
 
 kubectl apply -f vpa.yml (autoscaling when resource increase when reaching threshold)
 
-#### Creating frontend deployment ( Modify the image before applying backend.yml )
+#### Create frontend deployment ( Modify the image before applying backend.yml )
 
 kubectl apply -f Frontend.yml
 kubectl apply -f service.yml
@@ -84,6 +84,10 @@ kubectl apply -f service.yml
 
 kubectl apply -f hpa.yml
 
+
+#### Create ingress using below command.
+
+kubectl apply -f ingress.yml
 
 #### We can check the kubernetes resources using below commands.
 
@@ -121,6 +125,4 @@ Open localhost:8080 in your browser
 
 <img width="1920" height="1008" alt="image" src="https://github.com/user-attachments/assets/9c4fd708-4e7f-4de8-94ba-40f445c3ea83" />
 
-
-optionally you can apply the ingress 
 
