@@ -71,19 +71,21 @@ kubectl apply -f hpa.yml ( autoscaling CPU  when reaching threshold)
 
 #### We can check the kubernetes resources using below commands.
 
-##### Using below command you can check pod status.
+##### To check pod status.
 
 kubectl get pods 
 
 kubectl get pods -o wide
 
-##### Using below command you can check service 
+##### To check service 
 
 kubectl get svc
 
-##### Using below command you can check ingress
+##### To check ingress
 
 kubectl get ingress
+ 
+----
 
 #### You can test the application using port forwarding the frontend service.
 
