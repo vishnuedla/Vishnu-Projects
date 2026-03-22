@@ -1,4 +1,4 @@
-# Deployment of Blood bank app on kubernetes
+# Deployment of Blood bank management system on kubernetes
 
 ---
 
