@@ -45,7 +45,9 @@ kubectl apply -f mongoservice.yml
 #### Creating persistence volume and persistence volume claim for backend.
 
 cd  backend 
+
 kubectl apply -f pv.yml
+
 kubectl apply -f pvc.yml
 
 #### Create the secret backend deployment and service using below command ( Modify the image in backend.yml before apply the manifest file)
