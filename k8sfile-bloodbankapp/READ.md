@@ -1,9 +1,10 @@
 # Deployment of Blood bank app on kubernetes
 
---
+---
 
+## Install the Kind in your local using below
 
-Install the Kind in your local using https://kind.sigs.k8s.io/docs/user/quick-start/#installation
+https://kind.sigs.k8s.io/docs/user/quick-start/#installation
 
 ---
 
@@ -60,6 +61,8 @@ apply the all manifest files in deploy directory.
 k apply -f .
 
 kubectl apply -f vpa.yml (autoscaling when resource increase when reaching threshold)
+
+
 Move to frontend directory
 
 kubectl apply -f Frontend.yml
