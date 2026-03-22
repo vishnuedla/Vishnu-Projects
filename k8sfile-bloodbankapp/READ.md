@@ -26,15 +26,15 @@ kubectl apply -f pv.yml
 
 kubectl apply -f pvc.yml
 
-#### Create the mongodb statefulset.
+#### Apply below command to create mongodb statefulset.
 
 kubectl apply -f mongodb.yml
 
-#### create service to expose the mongodb
+#### Apply below command to create mongodb service.
 
 kubectl apply -f mongoservice.yml
 
-#### After successfully deploymnet of mongodb now this time to deploy the backend
+#### Creating persistence volume and persistence volume claim for backend.
 
 cd  backend 
 kubectl apply -f pv.yml
@@ -55,18 +55,37 @@ cd vertical-pod-autoscaler
 
 cd deploy
 
-#### Apply the all manifest files in deploy directory.
+#### Apply all manifest files in deploy folder.
 k apply -f .
+
+#### Apply below command to create VPA .
 
 kubectl apply -f vpa.yml (autoscaling when resource increase when reaching threshold)
 
-#### Creating frontend deployment (( Modify the image in frontend.yml before apply the manifest file)
+#### Creating frontend deployment ( Modify the image in frontend.yml before apply the manifest file)
 
 kubectl apply -f Frontend.yml
 kubectl apply -f service.yml
 kubectl apply -f hpa.yml ( autoscaling CPU  when reaching threshold)
 
-#### You can test the application using port forwarding
+
+#### We can check the kubernetes resources using below commands.
+
+##### Using below command you can check pod status.
+
+kubectl get pods 
+
+kubectl get pods -o wide
+
+##### Using below command you can check service 
+
+kubectl get svc
+
+##### Using below command you can check ingress
+
+kubectl get ingress
+
+#### You can test the application using port forwarding the frontend service.
 
 kubectl port-forward svc/frontend 8080 : 80
 
