@@ -89,7 +89,7 @@ kubectl apply -f hpa.yml
 
 kubectl apply -f ingress.yml
 
-#### We can check the kubernetes resources using below commands.
+#### We can checkmkubernetes resources using below commands.
 
 ##### To check pod status.
 
