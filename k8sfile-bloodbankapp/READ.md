@@ -40,6 +40,20 @@ Create the secret backend deployment and service using below command
 kubectl apply -f secret.yml
 kubectl apply -f backend.yml
 kubectl apply -f service.yml
+
+Before applying VPA yaml follow below steps:
+
+git clone https://github.com/kubernetes/autoscaler
+
+cd autoscaler
+
+cd vertical-pod-autoscaler
+
+cd deploy
+
+apply the all manifest files in deploy directory.
+k apply -f .
+
 kubectl apply -f vpa.yml (autoscaling when resource increase when reaching threshold)
 Move to frontend directory
 
@@ -48,21 +62,12 @@ kubectl apply -f service.yml
 kubectl apply -f hpa.yml ( autoscaling CPU  when reaching threshold)
 
 
+you can do the port forwarding using below to see the website.
+
+kubectl port-forward svc/frontend 8080 : 80
 
 
-
-
-
-
-
-
-
-
-
-
-
-kindly refer the deployment manifest file in k8sfile-bloodbankapp folder.
-
+check the localhost:8080
 <img width="1920" height="1008" alt="image" src="https://github.com/user-attachments/assets/3c31ec8e-1a6f-476b-97a9-9c61bb939c22" />
 
 <img width="1920" height="1008" alt="image" src="https://github.com/user-attachments/assets/535f1c64-eb1d-4a39-baac-6e40e299e15b" />
@@ -71,4 +76,7 @@ kindly refer the deployment manifest file in k8sfile-bloodbankapp folder.
 
 
 <img width="1920" height="1008" alt="image" src="https://github.com/user-attachments/assets/9c4fd708-4e7f-4de8-94ba-40f445c3ea83" />
+
+
+optionally you can apply the ingress 
 
