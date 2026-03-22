@@ -8,7 +8,7 @@ https://kind.sigs.k8s.io/docs/user/quick-start/#installation
 
 ---
 
-Follow below steps to setup the application on kind cluster
+### Follow below steps to setup the application on kind cluster
 
 Create the cluster using below commands
 kind create cluster --name cluster name
