@@ -57,7 +57,7 @@ kubectl apply -f backend.yml
 
 kubectl apply -f service.yml
 
-#### (Optional step : If you want to test the VPA follow below steps )Before applying VPA yaml follow below steps:
+#### (Optional step : If you want to test VPA follow below steps )Before applying VPA yaml follow below steps:
 
 git clone https://github.com/kubernetes/autoscaler
 
@@ -79,7 +79,7 @@ kubectl apply -f vpa.yml (autoscaling when resource increase when reaching thres
 kubectl apply -f Frontend.yml
 kubectl apply -f service.yml
 
-#### (Optional step : If you want to test the HPA apply below command )
+#### (Optional step : If you want to test HPA apply below command )
 
 
 kubectl apply -f hpa.yml
