@@ -2,7 +2,7 @@
 
 ---
 
-## Install the Kind in your local using below
+## Install the Kind in your local using below link
 
 Link : https://kind.sigs.k8s.io/docs/user/quick-start/#installation
 
