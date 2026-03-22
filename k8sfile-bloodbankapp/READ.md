@@ -13,13 +13,15 @@ kubectl apply -f namespace.yml
 
 create persistent volume for database using pv.yml , pvc.yml
 
+cd database
+
 first apply pv.yml using below command
  
 kubectl apply -f pv.yml
 
 kubectl apply -f pvc.yml
 
-Create mongodb by applying below applying manifest file in database.
+Create the mongodb statefulset.
 kubectl apply -f mongodb.yml
 
 create service to expose the mongodb
@@ -27,7 +29,35 @@ kubectl apply -f mongoservice.yml
 
 After successfully deploymnet of mongodb now this time to deploy the backend
 
-kubectl apply -f 
+Move to backend directory  
+
+cd  backend 
+first apply pv.yml using below command
+kubectl apply -f pv.yml
+kubectl apply -f pvc.yml
+
+Create the secret backend deployment and service using below command 
+kubectl apply -f secret.yml
+kubectl apply -f backend.yml
+kubectl apply -f service.yml
+kubectl apply -f vpa.yml (autoscaling when resource increase when reaching threshold)
+Move to frontend directory
+
+kubectl apply -f Frontend.yml
+kubectl apply -f service.yml
+kubectl apply -f hpa.yml ( autoscaling CPU  when reaching threshold)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
