@@ -18,7 +18,7 @@ kind create cluster --name cluster name
 
 kubectl apply -f namespace.yml
 
-#### Creating persistence volumen and persistence volumne claim using below commands
+#### Creating persistence volume and persistence volume claim using below commands
 
 cd database
 
