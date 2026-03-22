@@ -28,10 +28,17 @@ spec:
                 secretKeyRef:
                   name: backend
                   key: token
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "70Mi"
+            limits:
+              cpu : "200m"
+              memory: "500Mi"
           volumeMounts:
           - name: backend-storage
             mountPath: /app/data
       volumes:
-        - name: backend-storage
-          persistentClaim:
-            claimName: backend-pvc
+      - name: backend-storage
+        persistentVolumeClaim:
+          claimName: backend-pvc
