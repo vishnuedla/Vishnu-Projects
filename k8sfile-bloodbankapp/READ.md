@@ -26,7 +26,7 @@ kind create cluster --name cluster name
 
 kubectl apply -f namespace.yml
 
-#### Creating persistence volume and persistence volume claim for mongodb using below commands
+#### Create persistence volume and persistence volume claim for mongodb using below commands
 
 cd database
 
@@ -42,7 +42,7 @@ kubectl apply -f mongodb.yml
 
 kubectl apply -f mongoservice.yml
 
-#### Creating persistence volume and persistence volume claim for backend.
+#### Create persistence volume and persistence volume claim for backend.
 
 cd  backend 
 
@@ -50,12 +50,14 @@ kubectl apply -f pv.yml
 
 kubectl apply -f pvc.yml
 
-#### Create the secret backend deployment and service using below command ( Modify the image in backend.yml before apply the manifest file)
+#### Create secret backend deployment and service using below commands ( Modify the image before applying backend.yml )
 kubectl apply -f secret.yml
+
 kubectl apply -f backend.yml
+
 kubectl apply -f service.yml
 
-#### Before applying VPA yaml follow below steps:
+#### (Optional step : If you want to test the VPA follow below steps )Before applying VPA yaml follow below steps:
 
 git clone https://github.com/kubernetes/autoscaler
 
@@ -72,11 +74,15 @@ k apply -f .
 
 kubectl apply -f vpa.yml (autoscaling when resource increase when reaching threshold)
 
-#### Creating frontend deployment ( Modify the image in frontend.yml before apply the manifest file)
+#### Creating frontend deployment ( Modify the image before applying backend.yml )
 
 kubectl apply -f Frontend.yml
 kubectl apply -f service.yml
-kubectl apply -f hpa.yml ( autoscaling CPU  when reaching threshold)
+
+#### (Optional step : If you want to test the HPA apply below command )
+
+
+kubectl apply -f hpa.yml
 
 
 #### We can check the kubernetes resources using below commands.
