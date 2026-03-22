@@ -13,41 +13,36 @@ https://kind.sigs.k8s.io/docs/user/quick-start/#installation
 Create the cluster using below commands
 kind create cluster --name cluster name
 
-Create namespace for bloodbank app by applying manifest file
+#### Create namespace for bloodbank app by applying manifest file
 
 kubectl apply -f namespace.yml
 
-Create persistent volume for database using pv.yml , pvc.yml
+#### Creating mongo database using below commands
 
 cd database
 
-first apply pv.yml using below command
- 
 kubectl apply -f pv.yml
 
 kubectl apply -f pvc.yml
 
-Create the mongodb statefulset.
+#### Create the mongodb statefulset.
 kubectl apply -f mongodb.yml
 
-create service to expose the mongodb
+#### create service to expose the mongodb
 kubectl apply -f mongoservice.yml
 
-After successfully deploymnet of mongodb now this time to deploy the backend
-
-Move to backend directory  
+#### After successfully deploymnet of mongodb now this time to deploy the backend
 
 cd  backend 
-first apply pv.yml using below command
 kubectl apply -f pv.yml
 kubectl apply -f pvc.yml
 
-Create the secret backend deployment and service using below command 
+#### Create the secret backend deployment and service using below command 
 kubectl apply -f secret.yml
 kubectl apply -f backend.yml
 kubectl apply -f service.yml
 
-Before applying VPA yaml follow below steps:
+#### Before applying VPA yaml follow below steps:
 
 git clone https://github.com/kubernetes/autoscaler
 
@@ -57,27 +52,25 @@ cd vertical-pod-autoscaler
 
 cd deploy
 
-apply the all manifest files in deploy directory.
+#### Apply the all manifest files in deploy directory.
 k apply -f .
 
 kubectl apply -f vpa.yml (autoscaling when resource increase when reaching threshold)
 
-
-Move to frontend directory
+#### Creating frontend deployment
 
 kubectl apply -f Frontend.yml
 kubectl apply -f service.yml
 kubectl apply -f hpa.yml ( autoscaling CPU  when reaching threshold)
 
-
-you can do the port forwarding using below to see the website.
+#### you can do the port forwarding using below to see the website.
 
 kubectl port-forward svc/frontend 8080 : 80
 
 ----
 
 
-check the localhost:8080
+#### Check the localhost:8080
 
 
 <img width="1920" height="1008" alt="image" src="https://github.com/user-attachments/assets/3c31ec8e-1a6f-476b-97a9-9c61bb939c22" />
