@@ -10,7 +10,8 @@ Link : https://kind.sigs.k8s.io/docs/user/quick-start/#installation
 
 ### Follow below steps to setup the application on kind cluster
 
-Create the cluster using below commands
+#### Create the cluster using below commands
+
 kind create cluster --name cluster name
 
 #### Create namespace for bloodbank app by applying manifest file
