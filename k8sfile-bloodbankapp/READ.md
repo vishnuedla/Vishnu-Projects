@@ -7,11 +7,11 @@
 Link : https://kind.sigs.k8s.io/docs/user/quick-start/#installation
 
 ---
-## Download Metric Server using below command
+## Download Metrics Server using below command
 
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 
-#### Check whether Metric Server is running using below command.
+#### Check whether Metrics Server is running using below command.
 
 kubectl get pods -n kube-system | grep metrics-server
 
@@ -26,7 +26,7 @@ kind create cluster --name cluster name
 
 kubectl apply -f namespace.yml
 
-#### Create persistence volume and persistence volume claim for mongodb using below commands
+#### Create PersistenceVolume and PersistenceVolumeClaim for mongodb using below commands
 
 cd database
 
@@ -42,15 +42,15 @@ kubectl apply -f mongodb.yml
 
 kubectl apply -f mongoservice.yml
 
-#### Create persistence volume and persistence volume claim for backend.
+#### Create PersistenceVolume and PersistenceVolumeClaim for backend.
 
-cd  backend 
+cd backend 
 
 kubectl apply -f pv.yml
 
 kubectl apply -f pvc.yml
 
-#### Create secret backend deployment and service using below commands ( Modify the image before applying backend.yml )
+#### Create secret backend , deployment and service using below commands ( Modify the image before applying backend.yml )
 kubectl apply -f secret.yml
 
 kubectl apply -f backend.yml
@@ -107,7 +107,7 @@ kubectl get ingress
 
 kubectl port-forward svc/frontend 8080 : 80
 
-Search localhost:8080 in browser
+Open localhost:8080 in your browser
 
 ----
 
