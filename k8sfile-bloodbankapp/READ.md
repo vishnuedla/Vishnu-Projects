@@ -7,6 +7,13 @@
 Link : https://kind.sigs.k8s.io/docs/user/quick-start/#installation
 
 ---
+## Download Metric Server using below commands
+
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+#### Check whether Metric Server is running using below command.
+
+kubectl get pods -n kube-system | grep metrics-server
 
 ### Follow below steps to setup the application on kind cluster
 
