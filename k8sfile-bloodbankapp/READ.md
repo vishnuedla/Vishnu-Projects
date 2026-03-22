@@ -15,6 +15,7 @@ kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/late
 
 kubectl get pods -n kube-system | grep metrics-server
 
+----
 ### Follow below steps to setup the application on kind cluster
 
 #### Create cluster using below command
