@@ -27,9 +27,11 @@ kubectl apply -f pv.yml
 kubectl apply -f pvc.yml
 
 #### Create the mongodb statefulset.
+
 kubectl apply -f mongodb.yml
 
 #### create service to expose the mongodb
+
 kubectl apply -f mongoservice.yml
 
 #### After successfully deploymnet of mongodb now this time to deploy the backend
