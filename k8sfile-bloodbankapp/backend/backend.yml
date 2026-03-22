@@ -34,7 +34,7 @@ spec:
               memory: "70Mi"
             limits:
               cpu : "200m"
-              memory: "500Mi"
+              memory: "100Mi"
           volumeMounts:
           - name: backend-storage
             mountPath: /app/data
