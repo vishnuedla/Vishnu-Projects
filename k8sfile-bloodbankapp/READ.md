@@ -37,7 +37,7 @@ cd  backend
 kubectl apply -f pv.yml
 kubectl apply -f pvc.yml
 
-#### Create the secret backend deployment and service using below command 
+#### Create the secret backend deployment and service using below command ( Modify the image in backend.yml before apply the manifest file)
 kubectl apply -f secret.yml
 kubectl apply -f backend.yml
 kubectl apply -f service.yml
@@ -57,20 +57,19 @@ k apply -f .
 
 kubectl apply -f vpa.yml (autoscaling when resource increase when reaching threshold)
 
-#### Creating frontend deployment
+#### Creating frontend deployment (( Modify the image in frontend.yml before apply the manifest file)
 
 kubectl apply -f Frontend.yml
 kubectl apply -f service.yml
 kubectl apply -f hpa.yml ( autoscaling CPU  when reaching threshold)
 
-#### you can do the port forwarding using below to see the website.
+#### You can test the application using port forwarding
 
 kubectl port-forward svc/frontend 8080 : 80
 
+Search localhost:8080 in browser
+
 ----
-
-
-#### Check the localhost:8080
 
 
 <img width="1920" height="1008" alt="image" src="https://github.com/user-attachments/assets/3c31ec8e-1a6f-476b-97a9-9c61bb939c22" />
