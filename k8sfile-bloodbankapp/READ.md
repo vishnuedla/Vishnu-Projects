@@ -1,6 +1,35 @@
 Deployment of Blood bank app on kubernetes
 
-Git repo for source code https://github.com/suraj-savle/blood-bank-management-system/blob/main/backend/server.js
+Install the Kind in your local https://kind.sigs.k8s.io/docs/user/quick-start/#installation
+
+Follow below steps to setup the application on kind cluster
+
+create the cluster using below commands
+kind create cluster --name cluster name
+
+Create namespace for bloodbank app by applying manifest file
+
+kubectl apply -f namespace.yml
+
+create persistent volume for database using pv.yml , pvc.yml
+
+first apply pv.yml using below command
+ 
+kubectl apply -f pv.yml
+
+kubectl apply -f pvc.yml
+
+Create mongodb by applying below applying manifest file in database.
+kubectl apply -f mongodb.yml
+
+create service to expose the mongodb
+kubectl apply -f mongoservice.yml
+
+After successfully deploymnet of mongodb now this time to deploy the backend
+
+kubectl apply -f 
+
+
 
 kindly refer the deployment manifest file in k8sfile-bloodbankapp folder.
 
