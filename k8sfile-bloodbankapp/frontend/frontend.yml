@@ -4,6 +4,7 @@ metadata:
   name: frontend
   namespace: blood-bank
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: frontend
@@ -14,13 +15,13 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: vishnu4538/frontend:v1
+        image: vishnu4538/bloodui:v1
         ports:
         - containerPort: 80
-        resorces:
+        resources:
           requests:
             cpu: "10m"
-             memory: "10Mi"
+            memory: "10Mi"
           limits:
             cpu: "100m"
             memory: "512Mi"

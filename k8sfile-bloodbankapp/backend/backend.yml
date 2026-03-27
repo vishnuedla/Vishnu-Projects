@@ -16,12 +16,12 @@ spec:
     spec:
       containers:
         - name: myapp
-          image: vishnu4538/backend:v1
+          image: vishnu4538/backend:v3
           ports:
             - containerPort: 5000
           env:
             - name: MONGO_URI
-              value: "mongodb://admin:rootpassword@mongo:27017/"
+              value: "mongodb://admin:rootpassword@mongodb:27017"
             - name: PORT
               value: "5000"
             - name: JWT_SECRET
@@ -31,15 +31,8 @@ spec:
                   key: token
           resources:
             requests:
-              cpu: "10m"
+              cpu: "100m"
               memory: "70Mi"
             limits:
               cpu : "200m"
-              memory: "100Mi"
-          volumeMounts:
-          - name: backend-storage
-            mountPath: /app/data
-      volumes:
-      - name: backend-storage
-        persistentVolumeClaim:
-          claimName: backend-pvc
+              memory: "1Gi"
