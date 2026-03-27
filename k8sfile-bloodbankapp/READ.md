@@ -28,11 +28,16 @@ kubectl apply -f namespace.yml
 
 #### Create PersistenceVolume and PersistenceVolumeClaim for mongodb using below commands
 
+
 cd database
 
 kubectl apply -f pv.yml
 
 kubectl apply -f pvc.yml
+
+##### Before apply secret , create MongoDB password and modify password in secret.yml in base64 format.
+
+kubectl apply -f secret.yml
 
 #### Apply below command to create mongodb statefulset.
 
@@ -50,7 +55,9 @@ kubectl apply -f pv.yml
 
 kubectl apply -f pvc.yml
 
-#### Create secret backend , deployment and service using below commands ( Modify the image before applying backend.yml )
+#### Create secret backend , deployment and service using below commands
+
+##### Before apply secret generate JWT token and modify the secret.yml with token. 
 kubectl apply -f secret.yml
 
 kubectl apply -f backend.yml
@@ -74,7 +81,7 @@ kubectl apply -f .
 
 kubectl apply -f vpa.yml 
 
-#### Create frontend deployment ( Modify the image before applying backend.yml )
+#### Create frontend deployment 
 
 kubectl apply -f Frontend.yml
 kubectl apply -f service.yml
