@@ -5,7 +5,7 @@
 
 Download AWS CLi using link : https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 
-## Create new IAM for whole project.
+## Create new IAM user for whole project.
 
 
 
