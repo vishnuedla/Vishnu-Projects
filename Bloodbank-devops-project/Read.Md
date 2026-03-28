@@ -13,6 +13,17 @@ Download AWS CLi using link : https://docs.aws.amazon.com/cli/latest/userguide/g
 
 aws iam create-user --user-name bloodbank
 
+## Configure aws in visual studio code
+
+aws configure
+AWS Access Key ID [****************CEP5]:  < Enter  AWS Access Key ID >
+AWS Secret Access Key [****************ye7I]: < Enter  Secret Access >
+Default region name [us-east-1]: < You can select region >
+Default output format [json]:  < select default >
+
+
+
+
 
 
 
