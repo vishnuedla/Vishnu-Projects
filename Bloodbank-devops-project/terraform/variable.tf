@@ -35,6 +35,11 @@ variable "subnet_cidr_vpc_c" {
   type = string
 }
 
+variable "subnet_cidr_vpc_c2" {
+  
+  type = string
+}
+
 variable "cidr_vpc_D" {
   
   type = string
