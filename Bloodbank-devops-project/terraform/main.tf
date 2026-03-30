@@ -257,19 +257,50 @@ resource "aws_security_group" "vpc_C_sg" {
     vpc_id = aws_vpc.vpc_C.id
 
     ingress {
-        from_port = 22
-        to_port = 22
+        from_port = 2049
+        to_port = 2049
         protocol = "tcp"
+        cidr_blocks = [aws_vpc.vpc_C.cidr_block]
+    }
+ 
+    ingress {
+        from_port = 443
+        to_port = 443
+        protocol = "tcp"
+        cidr_blocks = [aws_vpc.vpc_C.cidr_block]
+    }
+
+    egress {
+        from_port = 0
+        to_port = 0
+        protocol = "-1"
         cidr_blocks = ["0.0.0.0/0"]
     }
+    
+}
+
+
+resource "aws_security_group" "ecr_sg" {  
+
+    name = "ecr_sg"
+
+    description = "Security Group for ECR"
+
+    vpc_id = aws_vpc.vpc_D.id
+
     ingress {
-            from_port = 80
-            to_port = 80
-            protocol = "tcp"
-            cidr_blocks = ["10.0.4.0/24"]
-
+        from_port = 443
+        to_port = 443
+        protocol = "tcp"
+        cidr_blocks = [aws_vpc.vpc_C.cidr_block]
     }
-
+    egress {
+        from_port = 0
+        to_port = 0
+        protocol = "-1"
+        cidr_blocks = [aws_vpc.vpc_C.cidr_block]
+       }
+  
 }
 
 
@@ -289,7 +320,7 @@ resource "aws_security_group" "efs_sg" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [aws_vpc.vpc_C.cidr_block]
   }
 }
 
@@ -367,57 +398,32 @@ resource "aws_eks_cluster" "bloodbank_eks_cluster" {
   
 }
 
+resource "aws_eks_node_group" "bloodbank_nodegroup" {
+  cluster_name    = aws_eks_cluster.bloodbank_eks_cluster.name
+  node_group_name = "bloodbank-nodegroup"
+  node_role_arn   = aws_iam_role.eks_nodegroup_role.arn
+  subnet_ids      = [aws_subnet.vpc_C_subnet.id, aws_subnet.vpc_C_subnet2.id]
 
-resource "aws_iam_role" "eks_fargate_pod_role_bloodbank" {
-  name = "eks-fargate-pod-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "eks-fargate-pods.amazonaws.com"
-        }
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "eks_fargate_pod_policy" {
-  role       = aws_iam_role.eks_fargate_pod_role_bloodbank.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
-}
-
-
-resource "aws_iam_role_policy_attachment" "fargate_ecr_pull" {
-  role       = aws_iam_role.eks_fargate_pod_role_bloodbank.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-}
-
-resource "aws_iam_role_policy_attachment" "fargate_efs_access" {
-  role       = aws_iam_role.eks_fargate_pod_role_bloodbank.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonElasticFileSystemClientReadWriteAccess"
-}
-
-resource "aws_iam_role_policy_attachment" "fargate_secrets_manager" {
-  role       = aws_iam_role.eks_fargate_pod_role_bloodbank.name
-  policy_arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
-}
-
-resource "aws_eks_fargate_profile" "default" {
-  cluster_name = aws_eks_cluster.bloodbank_eks_cluster.name
-  fargate_profile_name   = "bloodbank-fargate-profile"
-  pod_execution_role_arn = aws_iam_role.eks_fargate_pod_role_bloodbank.arn
-
-  subnet_ids = [aws_subnet.vpc_C_subnet.id, aws_subnet.vpc_C_subnet2.id]
-
-  selector {
-    namespace = "blood-bank"
+  scaling_config {
+    desired_size = 2
+    max_size     = 3
+    min_size     = 1
   }
-}
 
+  instance_types = ["t3.micro"]
+
+  tags = {
+    Name = "bloodbank-nodegroup"
+  }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.eks_nodegroup_policy,
+    aws_iam_role_policy_attachment.eks_cni_policy,
+    aws_iam_role_policy_attachment.ec2_container_registry_policy,
+    aws_iam_role_policy_attachment.efspolicy
+  ]
+
+}
 
 
 resource "aws_iam_role" "eks_nodegroup_role" {
@@ -452,28 +458,18 @@ resource "aws_iam_role_policy_attachment" "ec2_container_registry_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
 
-resource "aws_eks_node_group" "bloodbank_nodegroup" {
-  cluster_name    = aws_eks_cluster.bloodbank_eks_cluster.name
-  node_group_name = "bloodbank-nodegroup"
-  node_role_arn   = aws_iam_role.eks_nodegroup_role.arn
-  subnet_ids      = [aws_subnet.vpc_C_subnet.id, aws_subnet.vpc_C_subnet2.id]
-
-  scaling_config {
-    desired_size = 1
-    max_size     = 1
-    min_size     = 1
-  }
-
-  instance_types = ["t3.micro"]
-
-  tags = {
-    Name = "bloodbank-nodegroup"
-  }
+resource "aws_iam_role_policy_attachment" "efspolicy" {
+  role   = aws_iam_role.eks_nodegroup_role.name 
+  policy_arn = "arn:aws:iam::aws:policy/AmazonElasticFileSystemClientReadWriteAccess" 
 }
 
 
+
+
+
+
 resource "aws_efs_file_system" "bloodbank_efs" {
-  creation_token = "bloodbank-efs"
+creation_token = "bloodbank-efs"
  lifecycle_policy {
     transition_to_ia = "AFTER_30_DAYS"
   }
@@ -490,7 +486,7 @@ resource "aws_efs_file_system" "bloodbank_efs" {
 
 resource "aws_efs_mount_target" "bloodbank_efs_mount_target" {
   file_system_id  = aws_efs_file_system.bloodbank_efs.id
-  security_groups = [aws_security_group.vpc_C_sg.id]
+  security_groups = [aws_security_group.efs_sg.id]
   subnet_id = each.value
    for_each = {
     subnet1= aws_subnet.vpc_C_subnet.id
@@ -501,11 +497,27 @@ resource "aws_efs_mount_target" "bloodbank_efs_mount_target" {
 
 }
 
+resource "aws_vpc_endpoint" "ecr" {
+  vpc_id            = aws_vpc.vpc_D.id
+  service_name      = "com.amazonaws.ap-south-1.ecr.api"
+  vpc_endpoint_type = "Interface"
+  subnet_ids        = [aws_subnet.vpc_D_subnet.id]
+  security_group_ids = [aws_security_group.ecr_sg.id]
+  
+}
 
-
+resource "aws_vpc_endpoint" "ecr_dkr" {
+  vpc_id            = aws_vpc.vpc_D.id
+  service_name      = "com.amazonaws.ap-south-1.ecr.dkr"
+  vpc_endpoint_type = "Interface"
+  subnet_ids        = [aws_subnet.vpc_D_subnet.id]
+  security_group_ids = [aws_security_group.ecr_sg.id]
+  
+}
 resource "aws_ecr_repository" "bloodbank_ecr_repository" {
   name = "bloodbank-ecr-repository"
-   image_scanning_configuration {
+  
+  image_scanning_configuration {
     scan_on_push = true
   }
 
