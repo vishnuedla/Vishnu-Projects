@@ -1,13 +1,44 @@
-variable "cidr_vpc" {
+variable "cidr_vpc_A" {
+  type = string
+}
+
+variable "cidr_vpc_B" {
+  type = string
+}
+
+variable "cidr_vpc_C" {
+  type = string
+}
+
+
+variable "subnet_cidr_vpc_A" {
+  type = string
   
+}
+
+
+variable "subnet_cidr_vpc_B" {
+  type = string
+  
+}
+
+
+variable "subnet_cidr_vpc_c1" {
+  type = string
+  
+}
+
+
+variable "subnet_cidr_vpc_c2" {
   type = string
 
 }
-variable "subnet_cidr" {
-  
-  type = string
 
+variable "subnet_cidr_vpc_c3" {
+  type = string
+  
 }
+
 
 variable "ami" {
  
@@ -22,31 +53,6 @@ variable "instance_type" {
 }
 
 variable "key" {
-  
-  type = string
-}
-
-variable "cidr_vpc_c" {
-  
-  type = string
-}
-
-variable "subnet_cidr_vpc_c" {
-  
-  type = string
-}
-
-variable "subnet_cidr_vpc_c2" {
-  
-  type = string
-}
-
-variable "cidr_vpc_D" {
-  
-  type = string
-}
-
-variable "subnet_cidr_vpc_D" {
   
   type = string
 }

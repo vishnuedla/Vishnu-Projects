@@ -4,76 +4,98 @@ provider "aws" {
 
 }
 
-# Creating VPC B
+resource "aws_vpc" "vpc_A" {
+    cidr_block = var.cidr_vpc_A
+    tags = {
+        Name = "vpc_A"
+    }
+}
+
 resource "aws_vpc" "B" {
+    cidr_block = var.cidr_vpc_B
+    tags = {
+        Name = "vpc_B"
+    }
+}
 
-    cidr_block = var.cidr_vpc
-
-
-  }
-
-# Creating Subnet for VPC B 
-resource "aws_subnet" "subnet_vpc_B" {
-
-    vpc_id = aws_vpc.B.id
-
-    cidr_block = var.subnet_cidr
-
-  }
-
-
- #Creating VPC C
 resource "aws_vpc" "vpc_C" {
-
-
-    cidr_block = var.cidr_vpc_c
-  
+    cidr_block = var.cidr_vpc_C
+    tags = {
+        Name = "vpc_C"
+    }
 }
 
-# Creating Subnet for VPC C
-resource "aws_subnet" "vpc_C_subnet" {
 
-    vpc_id = aws_vpc.vpc_C.id
+###subnets
 
-    cidr_block = var.subnet_cidr_vpc_c
+
+resource "aws_subnet" "subnet_A" {
+    vpc_id = aws_vpc.vpc_A.id
+    cidr_block = var.subnet_cidr_vpc_A
+    tags = {
+        Name = "subnet_A"
+    }
+
+
+}
+
+
+resource "aws_subnet" "subnet_vpc_B" {
+    vpc_id = aws_vpc.B.id
     
-    availability_zone = "ap-south-1a"
-  
+    cidr_block = var.subnet_cidr_vpc_B
+    tags = {
+        Name = "subnet_vpc_B"
+    }
 }
-#subnet 2 for vpc c
-resource "aws_subnet" "vpc_C_subnet2" {
 
+
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
+
+
+resource "aws_subnet" "vpc_C_subnet" {
     vpc_id = aws_vpc.vpc_C.id
+    availability_zone_id    = data.aws_availability_zones.available.zone_ids[0]
+    cidr_block = var.subnet_cidr_vpc_c1
+    tags = {
+        Name = "vpc_C_subnet1"
+    }
+}
 
+resource "aws_subnet" "vpc_C_subnet2" {
+    vpc_id = aws_vpc.vpc_C.id
+    availability_zone_id = data.aws_availability_zones.available.zone_ids[1]
+    map_public_ip_on_launch = false
     cidr_block = var.subnet_cidr_vpc_c2
-
-    availability_zone = "ap-south-1b"
-
+    tags = {
+        Name = "vpc_C_subnet2"
+    }
 }
 
-
-
-#creating vpc D and subnet for vpc D
-
-resource "aws_vpc" "vpc_D" {
-
-
-    cidr_block = var.cidr_vpc_D
-  
+resource "aws_subnet" "vpc_C_subnet3" {
+    vpc_id = aws_vpc.vpc_C.id
+    availability_zone_id = data.aws_availability_zones.available.zone_ids[2]
+    cidr_block = var.subnet_cidr_vpc_c3
+    map_public_ip_on_launch = false
+    tags = {
+        Name = "vpc_C_subnet3"
+    }
 }
-
-resource "aws_subnet" "vpc_D_subnet" {
-
-    vpc_id = aws_vpc.vpc_D.id
-
-    cidr_block = var.subnet_cidr_vpc_D
-  
-}
-
 
 ###internet gatewayS
 
-# Creating Internet Gateway for VPC B
+# Creating Internet Gateway
+
+resource "aws_internet_gateway" "vpc_A_igw" {
+
+    vpc_id = aws_vpc.vpc_A.id
+  
+}
+
+
 resource "aws_internet_gateway" "vpc_B_igw" {
 
     vpc_id = aws_vpc.B.id
@@ -81,147 +103,197 @@ resource "aws_internet_gateway" "vpc_B_igw" {
 }
 
 
-# Creating Internet Gateway for VPC C
-
 resource "aws_internet_gateway" "vpc_C_igw" {
-
     vpc_id = aws_vpc.vpc_C.id
   
 }
+
+
+#NAT Gateway for VPC A
+
+resource "aws_eip" "nat_eip" {
+
+}
+
+
+resource "aws_nat_gateway" "vpc_C_nat_gateway" {
+    allocation_id = aws_eip.nat_eip.id
+    subnet_id = aws_subnet.vpc_C_subnet.id
+    tags = {
+        Name = "vpc_C_nat_gateway"
+    }
+}
+
+
+
+
+
+#Peering connection between VPC A and VPC B
+
+resource "aws_vpc_peering_connection" "vpc_B_A_peering" {
+    vpc_id = aws_vpc.B.id
+    peer_vpc_id = aws_vpc.vpc_A.id
+    auto_accept = true
+}
+
+#Peering connection between VPC B and VPC C
+
+resource "aws_vpc_peering_connection" "vpc_B_C_peering" {
+    vpc_id = aws_vpc.B.id
+    peer_vpc_id = aws_vpc.vpc_C.id
+    auto_accept = true
+}
+
+#Peering connection between VPC A and VPC C
+
+resource "aws_vpc_peering_connection" "vpc_C_A_peering" {
+    vpc_id = aws_vpc.vpc_C.id
+    peer_vpc_id = aws_vpc.vpc_A.id
+    auto_accept = true
+}
+
 
 #Routes tables for above vpc
 
-# Creating Route Table for VPC B
-resource "aws_route_table" "vpc_B_route_table" {
+# Creating Route Table for VPC A
 
+resource "aws_route_table" "vpc_A_route_table" {
+
+    vpc_id = aws_vpc.vpc_A.id
+
+    route {
+        cidr_block = var.cidr_vpc_B
+        vpc_peering_connection_id = aws_vpc_peering_connection.vpc_B_A_peering.id
+    }
+    route {
+        cidr_block = var.cidr_vpc_C
+        vpc_peering_connection_id = aws_vpc_peering_connection.vpc_C_A_peering.id
+    }
+    route {
+        cidr_block = "0.0.0.0/0"
+        gateway_id = aws_internet_gateway.vpc_A_igw.id
+    }
+  
+}
+
+resource "aws_route_table" "vpc_B" {
     vpc_id = aws_vpc.B.id
 
     route {
-        cidr_block = "0.0.0.0/0"
-        gateway_id = aws_internet_gateway.vpc_B_igw.id
-
+        cidr_block = var.cidr_vpc_A
+        vpc_peering_connection_id = aws_vpc_peering_connection.vpc_B_A_peering.id
     }
     route {
-        cidr_block = var.cidr_vpc_c
+        cidr_block = var.cidr_vpc_C
         vpc_peering_connection_id = aws_vpc_peering_connection.vpc_B_C_peering.id
     }
     route {
-        cidr_block = var.cidr_vpc_D
-        vpc_peering_connection_id = aws_vpc_peering_connection.vpc_B_D_peering.id
+        cidr_block = "0.0.0.0/0"
+        gateway_id = aws_internet_gateway.vpc_B_igw.id
+    }
+  
+}
 
+
+resource "aws_route_table" "vpc_C1_roue_table" {
+    vpc_id = aws_vpc.vpc_C.id
+
+    route {
+        cidr_block = var.cidr_vpc_A
+        vpc_peering_connection_id = aws_vpc_peering_connection.vpc_C_A_peering.id
+    }
+    route {
+        cidr_block = var.cidr_vpc_B
+        vpc_peering_connection_id = aws_vpc_peering_connection.vpc_B_C_peering.id
+    }
+    route {
+        cidr_block = "0.0.0.0/0"
+        gateway_id = aws_internet_gateway.vpc_C_igw.id
+    }
+  
+}
+
+
+resource "aws_route_table" "vpc_C2_route_table" {
+    vpc_id = aws_vpc.vpc_C.id
+
+    route {
+        cidr_block = var.cidr_vpc_A
+        vpc_peering_connection_id = aws_vpc_peering_connection.vpc_C_A_peering.id
+    }
+    route {
+        cidr_block = var.cidr_vpc_B
+        vpc_peering_connection_id = aws_vpc_peering_connection.vpc_B_C_peering.id
+    }
+    route {
+        cidr_block = "0.0.0.0/0"
+        nat_gateway_id = aws_nat_gateway.vpc_C_nat_gateway.id
     }
 
 }
 
-# Associating Route Table with Subnet in VPC B
-resource "aws_route_table_association" "vpc_B_subnet_association" {
 
+resource "aws_route_table" "vpc_C3_route_table" {
+    vpc_id = aws_vpc.vpc_C.id
+
+    route {
+        cidr_block = var.cidr_vpc_A
+        vpc_peering_connection_id = aws_vpc_peering_connection.vpc_C_A_peering.id
+    }
+    route {
+        cidr_block = var.cidr_vpc_B
+        vpc_peering_connection_id = aws_vpc_peering_connection.vpc_B_C_peering.id
+    }
+    route {
+        cidr_block = "0.0.0.0/0"
+        nat_gateway_id = aws_nat_gateway.vpc_C_nat_gateway.id
+    }
+
+}
+
+# Associating Route Table with Subnet in VPC A
+resource "aws_route_table_association" "vpc_A_subnet_association" {
+
+    subnet_id = aws_subnet.subnet_A.id
+
+    route_table_id = aws_route_table.vpc_A_route_table.id
+
+
+}
+
+
+
+
+
+resource "aws_route_table_association" "vpc_B" {
     subnet_id = aws_subnet.subnet_vpc_B.id
 
-    route_table_id = aws_route_table.vpc_B_route_table.id
-
-}
-
-#Route table for VPC C
-
-
-resource "aws_route_table" "vpc_C_route_table2" {
-
-    vpc_id = aws_vpc.vpc_C.id
-
-    route {
-        cidr_block = var.cidr_vpc_D
-        vpc_peering_connection_id = aws_vpc_peering_connection.vpc_C_D_peering.id
-    }
-
-
+    route_table_id = aws_route_table.vpc_B.id
+  
 }
 
 
-resource "aws_route_table_association" "vpc_C_subnet_association2" {
 
-    subnet_id = aws_subnet.vpc_C_subnet2.id
-
-    route_table_id = aws_route_table.vpc_C_route_table2.id
-
-}
-
-resource "aws_route_table" "vpc_C_route_table" {
-
-    vpc_id = aws_vpc.vpc_C.id
-
-    route {
-        cidr_block = var.cidr_vpc_D
-        vpc_peering_connection_id = aws_vpc_peering_connection.vpc_C_D_peering.id
-    }
-
-
-}
-
-#Associating Route Table with Subnet in VPC C
-
-resource "aws_route_table_association" "vpc_C_subnet_association" {
-
+resource "aws_route_table_association" "vpc_C1_roue_table_association" {
     subnet_id = aws_subnet.vpc_C_subnet.id
 
-    route_table_id = aws_route_table.vpc_C_route_table.id
-
-}
-
-
-
-
-
-resource "aws_route_table" "vpc_D_route_table" {
-
-    vpc_id = aws_vpc.vpc_D.id
-
-    route {
-        cidr_block = var.cidr_vpc_c
-        vpc_peering_connection_id = aws_vpc_peering_connection.vpc_C_D_peering.id
-    }
-    route {
-        cidr_block = var.cidr_vpc
-        vpc_peering_connection_id = aws_vpc_peering_connection.vpc_B_D_peering.id
-    }
+    route_table_id = aws_route_table.vpc_C1_roue_table.id
   
 }
 
-#PEERING CONNECTIONS 
-#peering connection between VPC B and VPC C
-resource "aws_vpc_peering_connection" "vpc_B_C_peering" {
+resource "aws_route_table_association" "vpc_C2_route_table_association" {
+    subnet_id = aws_subnet.vpc_C_subnet2.id
 
-    vpc_id = aws_vpc.B.id
-
-    peer_vpc_id = aws_vpc.vpc_C.id
-
-    auto_accept = true
+    route_table_id = aws_route_table.vpc_C2_route_table.id
   
 }
 
-#peering connection between VPC C and VPC D
-resource "aws_vpc_peering_connection" "vpc_C_D_peering" {
+resource "aws_route_table_association" "vpc_C3_route_table_association" {
+    subnet_id = aws_subnet.vpc_C_subnet3.id
 
-    vpc_id = aws_vpc.vpc_C.id
-
-    peer_vpc_id = aws_vpc.vpc_D.id
-
-    auto_accept = true
+    route_table_id = aws_route_table.vpc_C3_route_table.id
   
 }
-
-##peering connection between VPC B and VPC D
-resource "aws_vpc_peering_connection" "vpc_B_D_peering" {
-
-    vpc_id = aws_vpc.B.id
-
-    peer_vpc_id = aws_vpc.vpc_D.id
-
-    auto_accept = true
-  
-}
-
-
 
 
 ##Security Groups
@@ -246,10 +318,17 @@ resource "aws_security_group" "vpc_B_sg" {
         protocol = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
     }
+    egress {
+        from_port = 0
+        to_port = 0
+        protocol = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
 }
 
-resource "aws_security_group" "vpc_C_sg" {  
 
+resource "aws_security_group" "vpc_c" {
     name = "vpc_C_sg"
 
     description = "Security Group for VPC C"
@@ -257,71 +336,12 @@ resource "aws_security_group" "vpc_C_sg" {
     vpc_id = aws_vpc.vpc_C.id
 
     ingress {
-        from_port = 2049
-        to_port = 2049
+        from_port = 3000
+        to_port = 3000
         protocol = "tcp"
-        cidr_blocks = [aws_vpc.vpc_C.cidr_block]
-    }
- 
-    ingress {
-        from_port = 443
-        to_port = 443
-        protocol = "tcp"
-        cidr_blocks = [aws_vpc.vpc_C.cidr_block]
-    }
-
-    egress {
-        from_port = 0
-        to_port = 0
-        protocol = "-1"
         cidr_blocks = ["0.0.0.0/0"]
     }
-    
-}
 
-
-resource "aws_security_group" "ecr_sg" {  
-
-    name = "ecr_sg"
-
-    description = "Security Group for ECR"
-
-    vpc_id = aws_vpc.vpc_D.id
-
-    ingress {
-        from_port = 443
-        to_port = 443
-        protocol = "tcp"
-        cidr_blocks = [aws_vpc.vpc_C.cidr_block]
-    }
-    egress {
-        from_port = 0
-        to_port = 0
-        protocol = "-1"
-        cidr_blocks = [aws_vpc.vpc_C.cidr_block]
-       }
-  
-}
-
-
-resource "aws_security_group" "efs_sg" {
-  name        = "efs-sg"
-  description = "Allow NFS traffic"
-  vpc_id      = aws_vpc.vpc_D.id
-
-  ingress {
-    from_port   = 2049
-    to_port     = 2049
-    protocol    = "tcp"
-    cidr_blocks = [aws_vpc.vpc_C.cidr_block]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = [aws_vpc.vpc_C.cidr_block]
-  }
 }
 
 
@@ -347,11 +367,30 @@ resource "aws_instance" "Jump_Box" {
 
     security_groups = [aws_security_group.vpc_B_sg.id]   
 
+     user_data = <<-EOF
+                #!/bin/bash
+                sudo apt-get update -y
+                curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+                curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+                echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+                sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+                chmod +x kubectl
+                mkdir -p ~/.local/bin
+                mv ./kubectl ~/.local/bin/kubectl
+                curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+                sudo apt-get install unzip -y
+                unzip awscliv2.zip
+                sudo ./aws/install -i /usr/local/aws-cli -b /usr/local/bin
+                sudo apt-get install -y git
+                git clone https://github.com/vishnuedla/Vishnu-Projects.git
+            EOF
+
     tags = {
         Name = "Jump_Box"
     }
+  }
+
   
-}
 
 
 
@@ -392,37 +431,17 @@ resource "aws_eks_cluster" "bloodbank_eks_cluster" {
   name     = "bloodbank-eks-cluster"
  role_arn = aws_iam_role.eks_cluster_bloodbank_role.arn
 
+ version  = "1.35"
+
   vpc_config {
-    subnet_ids = [aws_subnet.vpc_C_subnet.id, aws_subnet.vpc_C_subnet2.id]
-  }
-  
-}
-
-resource "aws_eks_node_group" "bloodbank_nodegroup" {
-  cluster_name    = aws_eks_cluster.bloodbank_eks_cluster.name
-  node_group_name = "bloodbank-nodegroup"
-  node_role_arn   = aws_iam_role.eks_nodegroup_role.arn
-  subnet_ids      = [aws_subnet.vpc_C_subnet.id, aws_subnet.vpc_C_subnet2.id]
-
-  scaling_config {
-    desired_size = 2
-    max_size     = 3
-    min_size     = 1
-  }
-
-  instance_types = ["t3.micro"]
-
-  tags = {
-    Name = "bloodbank-nodegroup"
+    subnet_ids = [aws_subnet.vpc_C_subnet.id, aws_subnet.vpc_C_subnet2.id, aws_subnet.vpc_C_subnet3.id]
+     security_group_ids = [aws_security_group.vpc_c.id]
   }
 
   depends_on = [
-    aws_iam_role_policy_attachment.eks_nodegroup_policy,
-    aws_iam_role_policy_attachment.eks_cni_policy,
-    aws_iam_role_policy_attachment.ec2_container_registry_policy,
-    aws_iam_role_policy_attachment.efspolicy
+    aws_iam_role_policy_attachment.eks_cluster_policy,
   ]
-
+  
 }
 
 
@@ -463,57 +482,35 @@ resource "aws_iam_role_policy_attachment" "efspolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonElasticFileSystemClientReadWriteAccess" 
 }
 
+resource "aws_eks_node_group" "bloodbank_nodegroup" {
+  cluster_name    = aws_eks_cluster.bloodbank_eks_cluster.name
+  node_group_name = "bloodbank-nodegroup"
+  node_role_arn   = aws_iam_role.eks_nodegroup_role.arn
+  subnet_ids      = [aws_subnet.vpc_C_subnet2.id, aws_subnet.vpc_C_subnet3.id]
 
-
-
-
-
-resource "aws_efs_file_system" "bloodbank_efs" {
-creation_token = "bloodbank-efs"
- lifecycle_policy {
-    transition_to_ia = "AFTER_30_DAYS"
+  scaling_config {
+    desired_size = 2
+    max_size     = 3
+    min_size     = 1
   }
-  
+
+  instance_types = ["m7i-flex.large"]
 
   tags = {
-    Name = "bloodbank-efs"
+    Name = "bloodbank-nodegroup"
   }
 
-
-
-
-}
-
-resource "aws_efs_mount_target" "bloodbank_efs_mount_target" {
-  file_system_id  = aws_efs_file_system.bloodbank_efs.id
-  security_groups = [aws_security_group.efs_sg.id]
-  subnet_id = each.value
-   for_each = {
-    subnet1= aws_subnet.vpc_C_subnet.id
-    Subnet2  = aws_subnet.vpc_C_subnet2.id
+  depends_on = [
+    aws_iam_role_policy_attachment.eks_nodegroup_policy,
+    aws_iam_role_policy_attachment.eks_cni_policy,
+    aws_iam_role_policy_attachment.ec2_container_registry_policy,
+    aws_iam_role_policy_attachment.efspolicy
+  ]
 
 }
 
 
-}
 
-resource "aws_vpc_endpoint" "ecr" {
-  vpc_id            = aws_vpc.vpc_D.id
-  service_name      = "com.amazonaws.ap-south-1.ecr.api"
-  vpc_endpoint_type = "Interface"
-  subnet_ids        = [aws_subnet.vpc_D_subnet.id]
-  security_group_ids = [aws_security_group.ecr_sg.id]
-  
-}
-
-resource "aws_vpc_endpoint" "ecr_dkr" {
-  vpc_id            = aws_vpc.vpc_D.id
-  service_name      = "com.amazonaws.ap-south-1.ecr.dkr"
-  vpc_endpoint_type = "Interface"
-  subnet_ids        = [aws_subnet.vpc_D_subnet.id]
-  security_group_ids = [aws_security_group.ecr_sg.id]
-  
-}
 resource "aws_ecr_repository" "bloodbank_ecr_repository" {
   name = "bloodbank-ecr-repository"
   
