@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: debug-pod
+  namespace: blood-bank
+spec:
+  containers:
+  - name: debug
+    image: amazonlinux:2
+    command: ["/bin/bash", "-c", "sleep 3600"]
+  restartPolicy: Never
+
