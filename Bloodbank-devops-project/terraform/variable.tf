@@ -38,7 +38,10 @@ variable "subnet_cidr_vpc_c3" {
   type = string
   
 }
-
+variable "subnet_cidr_vpc_c4" {
+  type = string
+  
+}
 
 variable "ami" {
  
