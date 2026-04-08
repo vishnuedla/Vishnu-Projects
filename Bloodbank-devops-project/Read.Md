@@ -22,7 +22,7 @@ AWS Secret Access Key [****************ye7I]: < Enter  Secret Access >
 
 Default region name [us-east-1]: < You can select region >
 
-Default output format [json]:  < select default >
+Default output format [json]:  < select default 
 
 
 
