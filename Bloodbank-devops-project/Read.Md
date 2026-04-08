@@ -1,4 +1,4 @@
-# End to End Devops Project for three tier app
+# End to End Devops Project for three tier application
 ----
 
 ## Download AWS CLI or run below commands in cloudshell
@@ -23,6 +23,8 @@ AWS Secret Access Key [****************ye7I]: < Enter  Secret Access >
 Default region name [us-east-1]: < You can select region >
 
 Default output format [json]:  < select default >
+
+
 
 
 
