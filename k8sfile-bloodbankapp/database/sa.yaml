@@ -1,0 +1,11 @@
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: efs-sa
+  namespace: blood-bank
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::825982958791:role/efs-irsa-role
+
+
+

@@ -21,7 +21,7 @@ spec:
             - containerPort: 5000
           env:
             - name: MONGO_URI
-              value: "mongodb://admin:rootpassword@mongodb:27017"
+              value: "mongodb://admin:password@mongodb:27017"
             - name: PORT
               value: "5000"
             - name: JWT_SECRET

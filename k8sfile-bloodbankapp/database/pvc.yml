@@ -2,11 +2,11 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: mongo-pvc
+  namespace: blood-bank
 spec:
   resources:
     requests:
       storage: 1Gi
-  storageClassName: local-storage
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   volumeName: mongo-pv
