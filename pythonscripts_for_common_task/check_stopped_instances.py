@@ -5,7 +5,7 @@ import os
 
 
 
-def ec2():
+def check_stopped_instance():
     ec2 = boto3.client('ec2')
     response = ec2.describe_instances()
 
@@ -57,5 +57,5 @@ def ec2():
         print(f"Failed to send email: {e}")
     os.remove('stopped_instances.txt')
 
-ec2()
+check_stopped_instance()
 
