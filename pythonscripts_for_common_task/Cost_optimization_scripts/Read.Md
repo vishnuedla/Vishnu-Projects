@@ -4,7 +4,7 @@
 
 ##Prerequisite
 ----
-## Create secret keys for above created user
+## Creating user and attach the ec2 permission
 
 1) aws iam create-user --user-name python
 2) Attach ec2 policy to python user to have permission of ec2.
