@@ -34,3 +34,20 @@ How it works:
 3) Sends an automated email notification with the report attached.
 4) Can be scheduled via cron or deployed on AWS Lambda for serverless. execution.
 
+Note: change the SENDER and Receive mail id in code.
+
+----
+
+#### start_stop.py
+How it works:
+1) Uses boto3 to query EC2 instances and filter them by tags.
+2) Defines functions to start or stop instances tagged as "dev".
+3) Continuously checks the system time and triggers start/stop actions at specified times.
+
+Note: start_stop.py script will run continuously , when specified time was matched the function will execute.
+
+
+
+
+
+
