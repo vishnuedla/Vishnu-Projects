@@ -2,7 +2,7 @@
 
 -----
 
-##Prequesties
+##Prerequisite
 ----
 ## Create secret keys for above created user
 
