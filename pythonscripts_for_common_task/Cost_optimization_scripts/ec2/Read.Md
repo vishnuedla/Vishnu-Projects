@@ -38,7 +38,7 @@ How it works:
 3) Sends an automated email notification with the report attached.
 4) Can be scheduled via cron or deployed on AWS Lambda for serverless. execution.
 
-Note: change the SENDER and Receive mail id in code.
+Note: change the sender , Receive mail id  and create app password use in code.
 
 ----
 
