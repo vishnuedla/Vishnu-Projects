@@ -27,7 +27,7 @@ Default output format [json]:  < select default
 
 -----
 
-#### check_stopped_instances.py
+#### Check_stopped_instances.py
 How it works:
 1) Uses boto3 to query EC2 instance states.
 2) Generates a file listing stopped instances.
@@ -38,7 +38,7 @@ Note: change the SENDER and Receive mail id in code.
 
 ----
 
-#### start_stop.py
+#### Start_stop.py
 How it works:
 1) Uses boto3 to query EC2 instances and filter them by tags.
 2) Defines functions to start or stop instances tagged as "dev".
