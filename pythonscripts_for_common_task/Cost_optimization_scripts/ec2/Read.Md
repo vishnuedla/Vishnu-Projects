@@ -3,6 +3,19 @@
 -----
 
 ##Prerequisite
+
+----
+## Creating user and attach the ec2 permission
+
+1) aws iam create-user --user-name python
+2) Attach ec2 policy to python user to have permission of ec2.
+ 
+aws iam attach-user-policy \
+    --user-name python \
+    --policy-arn arn:aws:iam::aws:policy/AmazonEC2FullAccess
+3) create secret key to access aws cli 
+aws iam create-access-key --user-name test
+
 ----
 ## Configure aws in visual studio code
 
@@ -15,15 +28,6 @@ Default region name [us-east-1]: < You can select region >
 
 Default output format [json]:  < select default 
 
-----
-## Creating user and attach the ec2 permission
-
-1) aws iam create-user --user-name python
-2) Attach ec2 policy to python user to have permission of ec2.
- 
-aws iam attach-user-policy \
-    --user-name python \
-    --policy-arn arn:aws:iam::aws:policy/AmazonEC2FullAccess
 
 
 -----
