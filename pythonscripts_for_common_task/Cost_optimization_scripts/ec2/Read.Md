@@ -9,12 +9,11 @@
 
 1) aws iam create-user --user-name python
 2) Attach ec2 policy to python user to have permission of ec2.
- 
-aws iam attach-user-policy \
+    aws iam attach-user-policy \
     --user-name python \
     --policy-arn arn:aws:iam::aws:policy/AmazonEC2FullAccess
 3) create secret key to access aws cli 
-aws iam create-access-key --user-name test
+aws iam create-access-key --user-name python
 
 ----
 ## Configure aws in visual studio code
