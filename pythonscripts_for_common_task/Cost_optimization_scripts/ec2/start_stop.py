@@ -38,8 +38,8 @@ def stop():
 
 
 def time_execution():
- START_TIME="16:10:20" # Enter your prefered time to start the instance
- STOP_TIME= "16:13:20" # Enter your prefered time to Stop the instance
+ START_TIME="16:31:20" # Enter your prefered time to start the instance
+ STOP_TIME= "16:33:20" # Enter your prefered time to Stop the instance
  while True:
   x = datetime.datetime.now()
   print(x)
@@ -51,7 +51,7 @@ def time_execution():
   elif time_output == STOP_TIME :
     print("time is reached , we need to stop dev instances")
     stop()
-
+ time.wait(0.5)
 
 time_execution()
 
